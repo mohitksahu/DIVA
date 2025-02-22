@@ -2,11 +2,20 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import json
+from dotenv import load_dotenv
+import os
+# Load environment variables from .env file
+load_dotenv(dotenv_path="F:/DIVA/DIVA/.git/.env")
+
+# Retrieve the URL from the environment variables
+YOUR_URL = os.getenv("OLLAMA_API")
+
+if not YOUR_URL:
+    raise ValueError("❌ ERROR: 'YOUR_URL' not found in environment variables")
 
 app = Flask(__name__)
 CORS(app)
 
-YOUR_URL = "http://127.0.0.1:11434/api/generate"
 
 @app.route("/chat/", methods=["POST"])
 def chat_with_ollama():
