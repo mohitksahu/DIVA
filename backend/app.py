@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import requests
 import json
 from dotenv import load_dotenv
 import os
+
 # Load environment variables from .env file
 load_dotenv(dotenv_path="F:/DIVA/DIVA/.git/.env")
 
@@ -14,8 +15,15 @@ if not YOUR_URL:
     raise ValueError("❌ ERROR: 'YOUR_URL' not found in environment variables")
 
 app = Flask(__name__)
-CORS(app)
 
+# ✅ Allow requests from GitHub Pages frontend
+CORS(app, resources={r"/*": {"origins": ["https://mohitksahu.github.io"]}}, supports_credentials=True)
+
+@app.after_request
+def add_security_headers(response):
+    """ Adds security headers to prevent unnecessary browser warnings. """
+    response.headers["Permissions-Policy"] = "interest-cohort=()"
+    return response
 
 @app.route("/chat/", methods=["POST"])
 def chat_with_ollama():
@@ -48,19 +56,20 @@ def chat_with_ollama():
             return jsonify({"error": f"Ollama API Error {response.status_code}: {response.text}"}), response.status_code
 
         # ✅ Read Ollama's response correctly
-        ollama_reply = ""
+        ollama_reply = []
         for line in response.iter_lines():
             if line:
                 try:
                     decoded_line = json.loads(line.decode("utf-8"))  # Convert each line to JSON
-                    ollama_reply += decoded_line.get("response", "") + " "  # Append response content
+                    if "response" in decoded_line:
+                        ollama_reply.append(decoded_line["response"])
                 except json.JSONDecodeError:
                     print(f"⚠️ Warning: Ignored invalid JSON line: {line}")
 
-        ollama_reply = ollama_reply.strip()  # Clean up extra spaces
-        print(f"✅ Ollama Response: {ollama_reply}")
+        final_response = " ".join(ollama_reply).strip()  # Combine all lines into a single response
+        print(f"✅ Ollama Response: {final_response}")
 
-        return jsonify({"response": ollama_reply})
+        return jsonify({"response": final_response})
 
     except requests.exceptions.ConnectionError:
         print("❌ ERROR: Cannot connect to Ollama backend")

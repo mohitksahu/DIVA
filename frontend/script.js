@@ -1,5 +1,5 @@
 // API endpoint for the Flask backend
-const API_URL = "https://f6a8-2a09-bac1-36e0-60-00-1ae-3.ngrok-free.app";
+const API_URL = " https://71c0-2a09-bac1-36e0-60-00-1ae-3.ngrok-free.app/chat/";
 
 // Function to simulate typing effect
 function typeResponse(chatBox, responseText) {
@@ -42,7 +42,10 @@ async function sendMessage() {
     try {
         let response = await fetch(API_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
             body: JSON.stringify({ prompt: userInput })
         });
 
@@ -51,13 +54,11 @@ async function sendMessage() {
             throw new Error(`Server Error: ${response.status} ${response.statusText}`);
         }
 
-        let text = await response.text();
-        console.log("Raw Response:", text); // Debugging
-
-        let data = JSON.parse(text);
+        let data = await response.json();
+        console.log("Raw Response:", data); // Debugging
 
         // Ensure `data.response` exists
-        let botResponse = data.response || "No response received from Ollama.";
+        let botResponse = data.response || "No response received from DIVA AI.";
 
         // Remove typing indicator before displaying response
         chatBox.removeChild(typingIndicator);
