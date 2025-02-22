@@ -1,5 +1,5 @@
 // API endpoint for the Flask backend
-const API_URL = " https://71c0-2a09-bac1-36e0-60-00-1ae-3.ngrok-free.app/chat/";
+const API_URL = "https://71c0-2a09-bac1-36e0-60-00-1ae-3.ngrok-free.app/chat/";
 
 // Function to simulate typing effect
 function typeResponse(chatBox, responseText) {
