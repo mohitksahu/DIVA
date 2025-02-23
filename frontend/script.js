@@ -1,5 +1,5 @@
 // API endpoint for the Flask backend
-const API_URL = "https://71c0-2a09-bac1-36e0-60-00-1ae-3.ngrok-free.app/chat/";
+const API_URL = "https://02bd-2a09-bac5-3eeb-10dc-00-1ae-8.ngrok-free.app/chat/";
 
 // Function to simulate typing effect
 function typeResponse(chatBox, responseText) {
@@ -42,7 +42,7 @@ async function sendMessage() {
     try {
         let response = await fetch(API_URL, {
             method: "POST",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
@@ -77,7 +77,7 @@ async function sendMessage() {
 }
 
 // Add event listener for Enter key press
-document.getElementById("user-input").addEventListener("keydown", function(event) {
+document.getElementById("user-input").addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         sendMessage();
     }
