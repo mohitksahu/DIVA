@@ -16,14 +16,19 @@ if not YOUR_URL:
 
 app = Flask(__name__)
 
-# ✅ Allow requests from GitHub Pages frontend
-CORS(app, resources={r"/*": {"origins": ["https://mohitksahu.github.io"]}}, supports_credentials=True)
+# ✅ Allow requests from GitHub Pages frontend and local development
+CORS(app, resources={r"/*": {"origins": ["https://mohitksahu.github.io", "http://localhost", "http://127.0.0.1", "http://127.0.0.1:5500", "http://127.0.0.1:8080"]}}, supports_credentials=True)
 
 @app.after_request
 def add_security_headers(response):
     """ Adds security headers to prevent unnecessary browser warnings. """
     response.headers["Permissions-Policy"] = "interest-cohort=()"
     return response
+
+@app.route("/health", methods=["GET"])
+def health_check():
+    """ Simple health check endpoint for the frontend. """
+    return jsonify({"status": "ok", "message": "DIVA API is running"})
 
 @app.route("/chat/", methods=["POST"])
 def chat_with_ollama():
@@ -53,9 +58,7 @@ def chat_with_ollama():
         # ✅ Handle non-200 responses
         if response.status_code != 200:
             print(f"❌ ERROR: Ollama API Error {response.status_code}: {response.text}")
-            return jsonify({"error": f"Ollama API Error {response.status_code}: {response.text}"}), response.status_code
-
-        # ✅ Read Ollama's response correctly
+            return jsonify({"error": f"Ollama API Error {response.status_code}: {response.text}"}), response.status_code        # ✅ Read Ollama's response correctly
         ollama_reply = []
         for line in response.iter_lines():
             if line:
@@ -66,7 +69,8 @@ def chat_with_ollama():
                 except json.JSONDecodeError:
                     print(f"⚠️ Warning: Ignored invalid JSON line: {line}")
 
-        final_response = " ".join(ollama_reply).strip()  # Combine all lines into a single response
+        # Join without adding extra spaces - the model already includes necessary spaces
+        final_response = "".join(ollama_reply).strip()  # Combine all lines into a single response
         print(f"✅ Ollama Response: {final_response}")
 
         return jsonify({"response": final_response})

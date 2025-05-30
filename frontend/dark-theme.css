@@ -1,0 +1,261 @@
+/* Dark Theme for DIVA AI */
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #1a1c2c 0%, #2c1e58 100%);
+    min-height: 100vh;
+    overflow: hidden;
+    color: #e2e8f0;
+}
+
+/* Background Animation */
+.background-shapes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.1);
+    animation: float 20s infinite ease-in-out;
+}
+
+/* Main App Container */
+.app-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    z-index: 1;
+    color: #e2e8f0;
+}
+
+/* Header Styles */
+.app-header {
+    background: linear-gradient(135deg, #312e81 0%, #4c1d95 100%);
+    padding: 1.5rem 2rem;
+    color: white;
+    border-radius: 20px 20px 0 0;
+}
+
+/* Welcome Screen */
+.welcome-screen {
+    background-color: #1e293b;
+}
+
+.welcome-icon {
+    color: #8b5cf6;
+}
+
+.welcome-content h2 {
+    color: #e2e8f0;
+}
+
+.welcome-content p {
+    color: #94a3b8;
+}
+
+.quick-action-btn {
+    background: #334155;
+    border: 2px solid #475569;
+    color: #e2e8f0;
+}
+
+.quick-action-btn:hover {
+    border-color: #8b5cf6;
+    color: #a78bfa;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+}
+
+/* Chat Messages */
+.chat-messages {
+    background-color: #1e293b;
+}
+
+.message.user .avatar {
+    background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%);
+    color: white;
+}
+
+.message.assistant .avatar {
+    background: #334155;
+    color: #e2e8f0;
+}
+
+.message.user .message-bubble {
+    background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%);
+    color: white;
+}
+
+.message.assistant .message-bubble {
+    background: #334155;
+    color: #e2e8f0;
+    border: 1px solid #475569;
+}
+
+.message.error .message-bubble {
+    background: #7f1d1d;
+    color: #fecaca;
+    border: 1px solid #b91c1c;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    border-top: 1px solid #334155;
+    background-color: #1e293b;
+}
+
+.typing-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.typing-dots span {
+    background: #94a3b8;
+}
+
+.typing-text {
+    color: #94a3b8;
+}
+
+/* Input Section */
+.input-section {
+    padding: 1.5rem;
+    border-top: 1px solid #334155;
+    background: #1e293b;
+}
+
+.input-wrapper {
+    background: #334155;
+    border: 2px solid #475569;
+}
+
+.input-wrapper:focus-within {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
+.attach-btn {
+    color: #94a3b8;
+}
+
+.attach-btn:hover {
+    background: #475569;
+    color: #e2e8f0;
+}
+
+#user-input {
+    color: #e2e8f0;
+}
+
+#user-input::placeholder {
+    color: #64748b;
+}
+
+.character-count {
+    color: #94a3b8;
+}
+
+.send-btn {
+    background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%);
+}
+
+.send-btn:hover {
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.35);
+}
+
+/* Stop Button Styles */
+.stop-btn {
+    background-color: #dc2626;
+    color: white;
+}
+
+.stop-btn:hover {
+    background-color: #b91c1c;
+}
+
+.stop-btn.pressed {
+    background-color: #7f1d1d;
+    transform: scale(0.95);
+}
+
+/* Header Actions */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    margin-left: 10px;
+}
+
+#theme-toggle-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+/* Scrollbar Styling */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #334155;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Toast Notifications */
+.toast {
+    background: #b91c1c;
+    color: white;
+}
+
+.toast-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}

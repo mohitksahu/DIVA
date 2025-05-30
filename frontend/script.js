@@ -4,12 +4,15 @@ const API_URL = "http://127.0.0.1:5000";
 // Global state
 let isTyping = false;
 let conversationStarted = false;
+let abortTyping = false;
 
 // DOM elements
 const chatMessages = document.getElementById('chat-messages');
 const welcomeScreen = document.getElementById('welcome-screen');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
+const stopBtn = document.getElementById('stop-btn');
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
 const typingIndicator = document.getElementById('typing-indicator');
 const statusDot = document.getElementById('status-dot');
 const statusText = document.getElementById('status-text');
@@ -17,17 +20,27 @@ const charCount = document.getElementById('char-count');
 const errorToast = document.getElementById('error-toast');
 const toastMessage = document.getElementById('toast-message');
 
+// Theme preferences
+let currentTheme = 'dark'; // Default to dark theme
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function () {
     setupEventListeners();
     updateCharacterCount();
     checkConnectionStatus();
+    loadThemePreference();
 });
 
 // Setup event listeners
 function setupEventListeners() {
     // Send button click
     sendBtn.addEventListener('click', sendMessage);
+
+    // Stop button click
+    stopBtn.addEventListener('click', stopGenerating);
+
+    // Theme toggle button
+    themeToggleBtn.addEventListener('click', toggleTheme);
 
     // Enter key press
     userInput.addEventListener('keydown', function (event) {
@@ -99,7 +112,7 @@ async function checkConnectionStatus() {
         updateStatus('connecting', 'Connecting...');
 
         // Simple health check
-        const response = await fetch(API_URL.replace('/chat/', '/health'), {
+        const response = await fetch(`${API_URL}/health`, {
             method: 'GET',
             headers: { 'Accept': 'application/json' }
         });
@@ -139,12 +152,13 @@ async function sendMessage() {
     setInputState(false);
 
     // Show typing indicator
-    showTypingIndicator();
+    showTypingIndicator(); try {
+        // Reset the abort flag before starting a new request
+        abortTyping = false;
 
-    try {
         updateStatus('connecting', 'Sending...');
 
-        const response = await fetch(API_URL, {
+        const response = await fetch(`${API_URL}/chat/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -180,6 +194,33 @@ async function sendMessage() {
     }
 }
 
+// Stop text generation
+function stopGenerating() {
+    if (isTyping) {
+        // Set the flag to stop the typing animation
+        abortTyping = true;
+        isTyping = false;
+
+        // Display a brief message in status
+        updateStatus('', 'Generation stopped');
+
+        // Enable input again
+        setInputState(true);
+
+        setTimeout(() => {
+            if (!isTyping) {
+                updateStatus('', 'Ready');
+            }
+        }, 1500);
+
+        // Provide a brief visual feedback that stop was pressed
+        stopBtn.classList.add('pressed');
+        setTimeout(() => {
+            stopBtn.classList.remove('pressed');
+        }, 300);
+    }
+}
+
 // Add message to chat
 function addMessage(content, type) {
     const messageDiv = document.createElement('div');
@@ -200,12 +241,27 @@ function addMessage(content, type) {
         avatar.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
         avatar.style.background = '#ef4444';
         avatar.style.color = 'white';
-    }
-
-    // Add message bubble
+    }    // Add message bubble
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
-    bubble.textContent = content;
+    // Use innerHTML instead of textContent to preserve formatting
+    if (type === 'assistant') {
+        // Process the content to ensure proper formatting
+        // Replace newlines with <br>, fix spacing issues, and apply basic markdown
+        let formattedContent = content
+            .replace(/\n/g, '<br>')
+            .replace(/\s{2,}/g, ' ')  // Replace multiple spaces with a single space
+            .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;'); // Replace tabs with non-breaking spaces
+
+        // Apply basic markdown-like formatting
+        formattedContent = formattedContent
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold
+            .replace(/\*(.*?)\*/g, '<em>$1</em>');             // Italic
+
+        bubble.innerHTML = formattedContent;
+    } else {
+        bubble.textContent = content;
+    }
 
     // Special styling for error messages
     if (type === 'error') {
@@ -230,12 +286,20 @@ async function addMessageWithTyping(content, type) {
     const bubble = messageDiv.querySelector('.message-bubble');
 
     isTyping = true;
+    abortTyping = false;
 
     // Typing animation
     for (let i = 0; i <= content.length; i++) {
-        if (!isTyping) break; // Allow cancellation
+        // Check both flags to handle cancellation
+        if (!isTyping || abortTyping) {
+            // If stopped early, still show the full response
+            abortTyping = false;
+            break;
+        }
 
-        bubble.textContent = content.substring(0, i);
+        const currentText = content.substring(0, i);
+        // Use temporary text display during typing animation
+        bubble.textContent = currentText;
         scrollToBottom();
 
         // Variable delay for more natural typing
@@ -244,7 +308,25 @@ async function addMessageWithTyping(content, type) {
     }
 
     isTyping = false;
-    bubble.textContent = content;
+    // Use innerHTML for assistant messages to preserve formatting
+    if (type === 'assistant') {
+        // Process the content to ensure proper formatting
+        // Replace newlines with <br>, fix spacing issues, and apply basic markdown
+        let formattedContent = content
+            .replace(/\n/g, '<br>')
+            .replace(/\s{2,}/g, ' ')  // Replace multiple spaces with a single space
+            .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;'); // Replace tabs with non-breaking spaces
+
+        // Apply basic markdown-like formatting
+        formattedContent = formattedContent
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold
+            .replace(/\*(.*?)\*/g, '<em>$1</em>');             // Italic
+
+        bubble.innerHTML = formattedContent;
+    } else {
+        bubble.textContent = content;
+    }
+
     scrollToBottom();
 }
 
@@ -321,6 +403,29 @@ document.addEventListener('submit', function (event) {
     event.preventDefault();
     sendMessage();
 });
+
+// Theme toggle functions
+function toggleTheme() {
+    // For now, we're only using the dark theme
+    // No toggling needed
+}
+
+function applyTheme() {
+    // Always use the dark theme
+    document.querySelector('#theme-toggle-btn i').className = 'fas fa-sun';
+}
+
+function loadStylesheet() {
+    // Nothing to do - we're using a fixed stylesheet
+}
+
+function saveThemePreference() {
+    // Nothing to save - we're using a fixed theme
+}
+
+function loadThemePreference() {
+    // Nothing to load - we're using a fixed theme
+}
 
 // Make setQuickMessage globally available for HTML onclick
 window.setQuickMessage = setQuickMessage;

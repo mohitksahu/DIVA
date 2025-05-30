@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIVA AI - Intelligent Assistant</title>
-    <link rel="stylesheet" href="styles.css">
+    <!-- Base styles (disabled) -->
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <!-- Dark theme styles -->
+    <link rel="stylesheet" href="dark-theme-fixed.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Background Elements -->
     <div class="background-shapes">
@@ -46,9 +51,11 @@
                         <i class="fas fa-comments"></i>
                     </div>
                     <h2>Welcome to DIVA AI</h2>
-                    <p>Start a conversation with your intelligent assistant. Ask questions, get answers, and explore the possibilities.</p>
+                    <p>Start a conversation with your intelligent assistant. Ask questions, get answers, and explore the
+                        possibilities.</p>
                     <div class="quick-actions">
-                        <button class="quick-action-btn" onclick="setQuickMessage('Tell me about artificial intelligence')">
+                        <button class="quick-action-btn"
+                            onclick="setQuickMessage('Tell me about artificial intelligence')">
                             <i class="fas fa-brain"></i>
                             About AI
                         </button>
@@ -67,9 +74,7 @@
             <!-- Chat Messages -->
             <div class="chat-messages" id="chat-messages">
                 <!-- Messages will be dynamically added here -->
-            </div>
-
-            <!-- Typing Indicator -->
+            </div> <!-- Typing Indicator -->
             <div class="typing-indicator" id="typing-indicator" style="display: none;">
                 <div class="typing-content">
                     <div class="avatar">
@@ -83,6 +88,9 @@
                         </div>
                         <span class="typing-text">DIVA AI is thinking...</span>
                     </div>
+                    <button id="stop-btn" class="stop-btn" title="Stop generating">
+                        <i class="fas fa-square"></i>
+                    </button>
                 </div>
             </div>
         </main>
@@ -94,12 +102,8 @@
                     <button class="attach-btn" title="Attach file">
                         <i class="fas fa-paperclip"></i>
                     </button>
-                    <textarea 
-                        id="user-input" 
-                        placeholder="Type your message here..." 
-                        rows="1"
-                        maxlength="2000"
-                    ></textarea>
+                    <textarea id="user-input" placeholder="Type your message here..." rows="1"
+                        maxlength="2000"></textarea>
                     <div class="input-actions">
                         <div class="character-count">
                             <span id="char-count">0</span>/2000
@@ -134,4 +138,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
