@@ -40,7 +40,9 @@ function setupEventListeners() {
     stopBtn.addEventListener('click', stopGenerating);
 
     // Theme toggle button
-    themeToggleBtn.addEventListener('click', toggleTheme);
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+    }
 
     // Enter key press
     userInput.addEventListener('keydown', function (event) {
