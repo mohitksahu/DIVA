@@ -209,6 +209,9 @@ function stopGenerating() {
         // Enable input again
         setInputState(true);
 
+        // Hide the typing indicator and stop button
+        typingIndicator.style.display = 'none';
+
         setTimeout(() => {
             if (!isTyping) {
                 updateStatus('', 'Ready');
@@ -289,7 +292,10 @@ async function addMessageWithTyping(content, type) {
 
     isTyping = true;
     abortTyping = false;
-
+    
+    // Show the stop button during typing animation
+    stopBtn.parentElement.parentElement.style.display = 'block';
+    
     // Typing animation
     for (let i = 0; i <= content.length; i++) {
         // Check both flags to handle cancellation
@@ -310,6 +316,9 @@ async function addMessageWithTyping(content, type) {
     }
 
     isTyping = false;
+    
+    // Hide the stop button after typing is complete
+    stopBtn.parentElement.parentElement.style.display = 'none';
     // Use innerHTML for assistant messages to preserve formatting
     if (type === 'assistant') {
         // Process the content to ensure proper formatting
@@ -340,7 +349,10 @@ function showTypingIndicator() {
 
 // Hide typing indicator
 function hideTypingIndicator() {
-    typingIndicator.style.display = 'none';
+    // Only hide if we're not in typing animation mode
+    if (!isTyping) {
+        typingIndicator.style.display = 'none';
+    }
 }
 
 // Enable/disable input
